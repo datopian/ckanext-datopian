@@ -1,0 +1,5 @@
+include README.rst
+include LICENSE
+include requirements.txt
+recursive-include ckanext/datopian *.html *.json *.js *.less *.css *.mo *.yml
+recursive-include ckanext/datopian/migration *.ini *.py *.mako

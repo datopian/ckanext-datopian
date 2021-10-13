@@ -1,0 +1,14 @@
+# datopian-js:
+#   filter: rjsmin
+#   output: ckanext-datopian/%(version)s-datopian.js
+#   contents:
+#     - js/datopian.js
+#   extra:
+#     preload:
+#       - base/main
+
+# datopian-css:
+#   filter: cssrewrite
+#   output: ckanext-datopian/%(version)s-datopian.css
+#   contents:
+#     - css/datopian.css
