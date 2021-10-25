@@ -12,3 +12,9 @@
 #   output: ckanext-datopian/%(version)s-datopian.css
 #   contents:
 #     - css/datopian.css
+
+home_css:
+  filter: cssrewrite
+  output: ckanext-datopian/%(version)s-home.css
+  contents:
+    - home.css

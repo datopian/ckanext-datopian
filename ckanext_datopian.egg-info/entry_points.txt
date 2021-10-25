@@ -1,7 +1,0 @@
-
-        [ckan.plugins]
-        datopian=ckanext.datopian.plugin:DatopianPlugin
-
-        [babel.extractors]
-        ckan = ckan.lib.extract:extract_ckan
-    
