@@ -1,3 +1,66 @@
+/* =====================================================
+   The home page
+   ===================================================== */
+
+/* =====================================================
+   The body of the page
+   ===================================================== */
+body {
+  min-height: 100%;
+  /* background: #111; */
+}
+
+/* =====================================================
+   The "account masthead" bar across the top of the site
+   ===================================================== */
+
 .account-masthead {
-    background-color: green;
+  /* background: #000; */
+}
+
+/* ========================================================================
+   The main masthead bar that contains the site logo, nav links, and search
+   ======================================================================== */
+.masthead {
+  /* background-color: #000; */
+}
+/* ===========================================
+   The content in the middle of the front page
+   =========================================== */
+
+.hero {
+  padding-bottom: 10px;
+}
+
+.homepage {
+  /* background: #000; */
+}
+.main {
+  background: #eeeeee;
+  min-height: 300px;
+}
+
+.wrapper {
+  /* border: 1 px solid #ccc;
+  border-radius: 4 px;
+  -webkit-box-shadow: 0 0 0 4px rgb(0 0 0 / 5%);
+  box-shadow: 0 0 0 4px rgb(0 0 0 / 5%);
+  position: relative;
+  min-height: 300 px;
+  background-color: #111; */
+}
+
+/* ====================================
+   The footer at the bottom of the site
+   ==================================== */
+.site-footer {
+  /* background: #111; */
+}
+
+/* =====================================================
+   The about page
+   ===================================================== */
+
+.about {
+  min-height: 550px;
 }
