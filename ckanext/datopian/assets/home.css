@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600;700&display=swap');
+
 body {
-  font-family: 'Lato', sans-serif;
+  font-family: 'Readex Pro', sans-serif;
   background: #fff;
 }
 h1,
@@ -10,7 +12,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Lato', sans-serif;
+  font-family: 'Readex Pro', sans-serif;
   font-weight: 400;
 }
 h1 {
@@ -173,7 +175,6 @@ img {
 }
 .homepage .module-search .tags h3 {
   color: #383838;
-  font-family: 'Lato', sans-serif;
 }
 .homepage .module-search.box {
   background: transparent;
@@ -218,7 +219,6 @@ a.tag:hover {
 .totals h4 {
   padding: 0;
   margin: 0;
-  font-family: 'Lato', sans-serif;
 }
 .totals h4 {
   font-size: 2.6em;
@@ -518,7 +518,6 @@ a.tag:hover {
   background-color: #f5f5f5;
   border-top: 0;
   border-bottom: 0;
-  font-family: 'Lato', sans-serif;
 }
 @media screen and (min-width: 720px) {
   .wrapper-custom .secondary {
@@ -526,7 +525,6 @@ a.tag:hover {
   }
 }
 .wrapper-custom .module-content h2 {
-  font-family: 'Lato', sans-serif;
   font-size: 1.6em;
   font-weight: 600;
   color: #636363;
@@ -637,7 +635,6 @@ button.active {
   color: #7b7b7b;
 }
 .dataset-read .module .module-content .heading {
-  font-family: Lato, sans-serif !important;
   background-color: #f5f5f5 !important;
   border-bottom: none !important;
   margin: 0;
@@ -734,7 +731,6 @@ button.active {
 }
 .context-info h1.heading {
   font-weight: bold;
-  font-family: 'Lato', sans-serif;
   margin-top: 30px;
 }
 #footer-logo-1 {
