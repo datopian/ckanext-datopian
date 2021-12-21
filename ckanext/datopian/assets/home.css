@@ -74,9 +74,10 @@ img {
   }
 }
 .hero {
-  background: #fff url('/images/hero-bg.png') !important;
-  background-size: cover;
-  background-position: center center;
+  background: #fff url('/base/images/hero-bg.png') !important;
+  background-size: auto 120% !important;
+  background-repeat: no-repeat !important;
+  background-position: right top !important;
 }
 [role=main] {
   min-height: 400px;
