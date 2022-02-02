@@ -4,6 +4,9 @@ bower_components
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
+ckanext/datopian/__pycache__/
+ckanext/__pycache__/
+
 *.py[cod]
 
 # C extensions
