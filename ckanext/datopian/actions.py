@@ -38,4 +38,4 @@ def package_show(up_func,context,data_dict):
         log.error(f'package {id} download stats not available')
         result['total_downloads'] = 0
 
-    return 
+    return result
