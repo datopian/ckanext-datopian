@@ -1,0 +1,6 @@
+
+main-css:
+  filter: cssrewrite
+  output: ckanext-datopian/%(version)s-datopain-style.css
+  contents:
+    - css/style.css
