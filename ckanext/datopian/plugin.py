@@ -1,6 +1,7 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 from flask import Blueprint, render_template
+from ckanext.datopian.actions import package_search, package_show
 
 
 def hello_plugin():
@@ -10,6 +11,7 @@ def hello_plugin():
 class DatopianPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IBlueprint)
+    plugins.implements(plugins.IActions)
 
     # IConfigurer
 
@@ -29,3 +31,15 @@ class DatopianPlugin(plugins.SingletonPlugin):
         # Add plugin url rules to Blueprint object
         blueprint.add_url_rule('/hello_plugin', '/hello_plugin', hello_plugin)
         return blueprint
+
+
+    # IActions
+    def get_actions(self):
+        if "googleanalytics" in toolkit.config.get("ckan.plugins", "").split():
+            # if so, add the action to the list of actions
+            return {
+                'package_search': package_search,
+                'package_show': package_show
+            }
+
+        return {}
