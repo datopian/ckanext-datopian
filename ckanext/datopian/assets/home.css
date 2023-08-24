@@ -181,6 +181,10 @@ img {
   background: transparent;
 }
 
+.btn-success {
+  border-radius: 0 !important;
+}
+
 @media only screen and (max-width: 768px) {
   .homepage .module-search {
     margin-top: 0px !important;
@@ -208,7 +212,7 @@ img {
 .homepage .module-search .tags {
   padding: 5px 10px 10px 10px;
   background-color: transparent;
-  border-radius: 0;
+  border-radius: 0 !important;
 }
 
 .homepage .module-search .search-input {
@@ -821,6 +825,11 @@ button.active {
 .dataset-read .module .module-content .tags {
   border-bottom: 1px solid #e3e3e3;
   padding-bottom: 25px;
+}
+
+.tag {
+  border-radius: 0 !important;
+  font-family: 'Source Serif Pro', serif;
 }
 
 .dataset-read .module .module-content .tags .well {
