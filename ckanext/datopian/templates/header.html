@@ -72,7 +72,7 @@
     </div>
     <hgroup class="{{ g.header_class }} navbar-left">
       {% block header_logo %} {% if g.site_logo %}
-      <a class="logo" href="{{ h.url_for('home.index') }}"><img src="{{ h.url_for_static_or_external(g.site_logo) }}" alt="{{ g.site_title }}" title="{{ g.site_title }}" /></a>
+      <a class="logo" href="{{ h.url_for('home.index') }}" ><img src="{{ h.url_for_static_or_external('/base/images/ckan-logo.svg') }}" width="500px" height="500px" alt="{{ g.site_title }}" title="{{ g.site_title }}" /></a>
       {% else %}
       <h1>
         <a href="{{ h.url_for('home.index') }}">{{ g.site_title }}</a>
@@ -84,7 +84,7 @@
     <div class="collapse navbar-collapse" id="main-navigation-toggle">
       {% block header_site_navigation %}
       <nav class="section navigation">
-        <ul class="nav nav-pills">
+        <ul class="nav nav-pills" style="font-weight: 600;color: #232323;">
             {% block header_site_navigation_tabs %}
 		{{ h.build_nav_main(
 		    ('dataset.search', _('Datasets')),
@@ -96,9 +96,9 @@
       </nav>
       {% endblock %} {% block header_site_search %}
       <form class="section site-search simple-input" action="{% url_for 'dataset.search' %}" method="get">
-        <div class="field">
+        <div class="field" style="border-radius: 0px;">
           <label for="field-sitewide-search">{% block header_site_search_label %}{{ _('Search Datasets') }}{% endblock %}</label>
-          <input id="field-sitewide-search" type="text" class="form-control" name="q" placeholder="{{ _('Search') }}" aria-label="{{ _('Search datasets') }}"/>
+          <input id="field-sitewide-search" style="" type="text" class="form-control" name="q" placeholder="{{ _('Search') }}" aria-label="{{ _('Search datasets') }}"/>
           <button class="btn-search" type="submit" aria-label="{{ _('Submit') }}"><i class="fa fa-search"></i></button>
         </div>
       </form>
