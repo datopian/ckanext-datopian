@@ -94,11 +94,12 @@ img {
 .masthead {
   background: #fff;
 }
-.masthead .nav li a {
-  color: #525252;
+.masthead .navbar-nav li a {
+  color: #525252 !important;
 }
-.masthead .nav li a:hover {
-  background: #003164;
+.masthead .navbar-nav li a:hover {
+  background: #003164 !important;
+  background-color: #fff !important;
 }
 .account-masthead {
   padding: 0px 0;
@@ -114,14 +115,15 @@ img {
 .masthead .navigation .nav-pills li a:hover,
 .masthead .navigation .nav-pills li a:focus,
 .masthead .navigation .nav-pills li.active a {
-  background-color: #fff;
+  background-color: #fff !important;
 }
-.masthead .nav > li > a:focus,
-.masthead .nav > li > a:hover,
-.masthead .nav > .active > a,
-.masthead .nav > .active > a:hover,
-.masthead .nav > .active > a:focus {
-  color: #003164;
+.masthead .navbar-nav > li > a:focus,
+.masthead .navbar-nav > li > a:hover,
+.masthead .navbar-nav > .active > a,
+.masthead .navbar-nav > .active > a:hover,
+.masthead .navbar-nav > .active > a:focus {
+  color: #003164 !important;
+  background-color: #fff !important;
 }
 /* Header */
 .account-masthead .account ul li {
