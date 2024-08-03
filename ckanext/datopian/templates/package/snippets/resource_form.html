@@ -20,11 +20,12 @@
 
   {% block basic_fields %}
     {% block basic_fields_url %}
-      {% set is_upload = (data.url_type == 'upload') %}
+      {% set is_upload = false %}
+       {% snippet 'r2uploader/snippets/uploader.html' %}
       {% snippet 'package/snippets/resource_upload_field.html',
         data=data,
         errors=errors,
-        is_url=data.url and not is_upload,
+        is_url=true,
         is_upload=is_upload,
         is_upload_enabled=h.uploads_enabled(),
         url_label=_('URL'),
