@@ -4,6 +4,7 @@ from flask import Blueprint, render_template
 import boto3
 from botocore.exceptions import ClientError
 from botocore.config import Config
+from ckanext.datopian.views.resource import get_blueprints
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
@@ -32,6 +33,7 @@ class DatopianPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IBlueprint)
     plugins.implements(plugins.IActions)
+    plugins.implements(plugins.IResourceController)
 
     def get_actions(self):
         return {
@@ -48,6 +50,7 @@ class DatopianPlugin(plugins.SingletonPlugin):
     def update_config(self, config_):
         toolkit.add_template_directory(config_, 'templates')
         toolkit.add_public_directory(config_, 'public')
+        toolkit.add_template_directory(config_, 'theme/templates')
         toolkit.add_resource('assets',
                              'datopian')
 
@@ -60,9 +63,55 @@ class DatopianPlugin(plugins.SingletonPlugin):
         blueprint.template_folder = u'templates'
         # Add plugin url rules to Blueprint object
         blueprint.add_url_rule('/hello_plugin', '/hello_plugin', hello_plugin)
-        return blueprint
+        return get_blueprints()
 
 
+    # IResourceController
+
+    def before_create(self, context, resource_dict):
+        '''Required by IResourceController'''
+        pass
+
+    def before_show(self, resource_dict):
+        '''Required by IResourceController'''
+        pass
+
+    def after_create(self, context, resource_dict):
+        '''Required by IResourceController'''
+        pass
+
+    def after_delete(self, context, resource_dict):
+        '''Required by IResourceController'''
+        pass
+
+    def before_resource_update(self, context, current, resource_dict):
+        '''Required by IResourceController'''
+        pass
+
+    def before_update(self, context, current, resource_dict):
+        '''Required by IResourceController'''
+        pass
+
+    def after_resource_update(self, context, resource_dict):
+        '''Required by IResourceController'''
+        pass
+
+    def after_update(self, context, resource_dict):
+        '''Required by IResourceController'''
+        pass
+
+    def before_delete(self, context, resource, resources):
+        # Delete the resource from the storage
+        for rs in resources:
+            if rs.get('id') == resource.get('id'):
+                key_path = f"resources/{rs['id']}/{rs['name']}"
+                try:
+                    response = s3_client.delete_object(
+                        Bucket=S3_BUCKET_NAME,
+                        Key=key_path
+                    )
+                except ClientError as e:
+                    raise e
 
 
 def create_multipart_upload(context, data_dict):
@@ -70,13 +119,14 @@ def create_multipart_upload(context, data_dict):
     # file_hash = data_dict.get('file_hash')
     content_type = data_dict.get('contentType')
     filename = file.get('name')
+    resourceid = data_dict.get('resourceId')
 
     # return {'key': f'resources/{filename}'}
 
     try:
         response = s3_client.create_multipart_upload(
             Bucket=S3_BUCKET_NAME,
-            Key=f'resources/{filename}',
+            Key=f'resources/{resourceid}/{filename}',
             ContentType=content_type,
             # Metadata={'x-amz-meta-file-hash': file_hash}
         )
