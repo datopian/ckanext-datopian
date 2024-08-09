@@ -4,6 +4,7 @@
 
 {% block form %}
   {% snippet 'package/snippets/resource_edit_form.html',
+    pkg_dict=pkg_dict,
     data=data,
     errors=errors,
     error_summary=error_summary,

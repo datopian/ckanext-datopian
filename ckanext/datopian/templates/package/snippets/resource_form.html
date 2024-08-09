@@ -16,13 +16,16 @@
 
   {% block errors %}{{ form.errors(error_summary) }}{% endblock %}
 
-  <input name="id" value="{{ data.id }}" type="hidden"/>
+  <input name="id" id="resourcehid" value="{{ data.id }}" type="hidden"/>
+  <input name="embedurl" id="embedurl" value="" type="hidden"/>
+  <input name="oldurl" id="oldurl" value="{{ data.url }}" type="hidden"/>
 
   {% block basic_fields %}
     {% block basic_fields_url %}
       {% set is_upload = (data.url_type == 'upload') %}
       {% snippet 'package/snippets/resource_upload_field.html',
         data=data,
+        pkg_dict=pkg_dict,
         errors=errors,
         is_url=data.url and not is_upload,
         is_upload=is_upload,

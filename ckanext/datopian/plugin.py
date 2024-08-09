@@ -35,6 +35,7 @@ class DatopianPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.IResourceController)
 
+
     def get_actions(self):
         return {
             'create-multipart-upload': create_multipart_upload,
@@ -231,3 +232,5 @@ def sign_part(context, data_dict):
         return {'url': url}
     except ClientError as e:
         return {'error': str(e)}
+    
+

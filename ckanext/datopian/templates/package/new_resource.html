@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block form %}
-{% snippet 'r2uploader/snippets/uploader.html', data=data, pkg_id=pkg_dict.id, pkg_state=pkg_dict.state, errors=errors, error_summary=error_summary, include_metadata=false, pkg_name=pkg_name, stage=stage, dataset_type=dataset_type %}{% endblock %}
+{% snippet resource_form_snippet, data=data, pkg_dict=pkg_dict, pkg_id=pkg_dict.id, pkg_state=pkg_dict.state, errors=errors, error_summary=error_summary, include_metadata=false, pkg_name=pkg_name, stage=stage, dataset_type=dataset_type %}{% endblock %}
 
 {% block secondary_content %}
   {% snippet 'package/snippets/resource_help.html' %}
