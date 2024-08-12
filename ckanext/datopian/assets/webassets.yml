@@ -18,3 +18,14 @@ home_css:
   output: ckanext-datopian/%(version)s-home.css
   contents:
     - home.css
+
+rupload_js:
+  output: ckanext-datopian/%(version)s-rupload.js
+  contents:
+    - js/453.83d3a572.chunk.js
+    - js/main.e3d0ec1b.js
+
+rupload_css:
+  output: ckanext-datopian/%(version)s-rupload.css
+  contents:
+    - css/main.53e7e154.css

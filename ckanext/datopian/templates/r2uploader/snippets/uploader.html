@@ -1,0 +1,12 @@
+{% asset 'datopian/rupload_css' %} {% asset 'datopian/rupload_js' %}
+
+<div
+  id="ResourceEditor"
+  data-dataset-id="{{ pkg_id }}"
+  data-dataset-state="{{ pkg_state }}"
+  {% if data.id %}
+    data-resource-id="{{ data.id }}"
+  {% else %}
+    data-resource-id=""
+  {% endif %}
+></div>

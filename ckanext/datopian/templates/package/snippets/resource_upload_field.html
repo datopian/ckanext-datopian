@@ -20,7 +20,7 @@ placeholder - placeholder text for url field
 #}
 {% import "macros/form.html" as form %}
 
-{% set first_button = 'resource-upload-button' if is_upload_enabled else 'resource-link-button' %}
+{% set first_button = 'resource-link-button' if is_upload_enabled else 'resource-link-button' %}
 
 {% macro remove_button(js='') %}
   <button type="button" class="btn btn-danger btn-remove-url"
@@ -82,12 +82,7 @@ placeholder - placeholder text for url field
           <div class="upload-type">
             {{ remove_button(
               js="$('#field-resource-upload').replaceWith($('#field-resource-upload').val('').clone(true))") }}
-            {{ form.input(
-              'upload',
-              label=upload_label or _('File'),
-              id='field-resource-upload',
-              type='file',
-              classes=['control-full']) }}
+             {% snippet 'r2uploader/snippets/uploader.html', data=data, pkg_id=pkg_dict.id, pkg_state=pkg_dict.state, errors=errors, error_summary=error_summary, include_metadata=false, pkg_name=pkg_name, stage=stage, dataset_type=dataset_type %}
           </div>
         {% endblock %}
       </div>
