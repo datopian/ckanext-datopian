@@ -156,6 +156,7 @@ class CreateView(MethodView):
         resource_id = data.pop(u'id')
 
         embed_url = data.pop(u'embedurl')
+        data.pop(u'oldurl')
         if embed_url:
             data[u'url'] = embed_url
 
