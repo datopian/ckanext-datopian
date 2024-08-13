@@ -82,8 +82,17 @@ placeholder - placeholder text for url field
           <div class="upload-type">
             {{ remove_button(
               js="$('#field-resource-upload').replaceWith($('#field-resource-upload').val('').clone(true))") }}
-             {% snippet 'r2uploader/snippets/uploader.html', data=data, pkg_id=pkg_dict.id, pkg_state=pkg_dict.state, errors=errors, error_summary=error_summary, include_metadata=false, pkg_name=pkg_name, stage=stage, dataset_type=dataset_type %}
-          </div>
+              {% if pkg_dict %}
+                {% snippet 'r2uploader/snippets/uploader.html', data=data, pkg_id=pkg_dict.id, pkg_state=pkg_dict.state, errors=errors, error_summary=error_summary, include_metadata=false, pkg_name=pkg_name, stage=stage, dataset_type=dataset_type %}
+              {% else %}
+                {{ form.input(
+                'upload',
+                label=upload_label or _('File'),
+                id='field-resource-upload',
+                type='file',
+                classes=['control-full']) }}
+              {% endif %}
+            </div>
         {% endblock %}
       </div>
     {% endif %}
