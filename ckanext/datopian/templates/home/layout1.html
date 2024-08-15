@@ -3,15 +3,23 @@
     <div class="container">
       <div class="row row1">
         <div class="col-md-12">
-          {% block search %}
-            {% snippet 'home/snippets/search.html' %}
-          {% endblock %}
+          {% block search %} {% snippet 'home/snippets/search.html' %} {%
+          endblock %}
         </div>
       </div>
     </div>
   </div>
   <div class="main">
     <div class="container">
+      <div class="row">
+        <h1>
+          {{ h.SI_number_span(g.package_count) }}
+          <strong class="count" style="color: black;font-weight: 300;font-size: 30px;">
+            Dataset{{ 's' if g.package_count >1 }} Available</strong
+          >
+        </h1>
+      </div>
+
       <div class="row row2">
         <div class="col-md-6 col1">
           {# Note: this featured_group block is used as an example in the theming
