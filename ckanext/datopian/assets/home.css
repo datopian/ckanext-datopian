@@ -864,6 +864,10 @@ button.active {
   border-radius: 30px;
   border-color: #eee;
 }
+
+h2 .count {
+  color: black !important;
+}
 /**** Responsive CSS *****/
 @media only screen and (max-width: 768px) {
   .navbar-toggle {
