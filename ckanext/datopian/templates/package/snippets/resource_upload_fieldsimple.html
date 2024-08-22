@@ -1,0 +1,100 @@
+{% from 'macros/form/input.html' import input %}
+
+<div data-module="resource-upload-field" class="resource-upload-field form-group">
+
+{% if data %}
+   {% set is_required = 'required' if ('.bam' in data.url or '.vcf' in data.url) and ('.bai' not in data.url and '.ti' not in data.url) else '' %}
+    {% if is_required %}
+        {{ input(
+                'index_url',
+                label=_('Index link'),
+                id='url-input',
+                type='url',
+                placeholder=placeholder or 'http://example.com/my-file.bam.bai',
+                error=errors.get('url_field'),
+                value=data.get('index_url'),
+                classes=['control-full'],
+                is_required=is_required)
+            }}
+    {% endif %}
+{% else %}
+<input type="hidden" id="control-required" />
+  <input type="radio" id="state-none" name="input_type" value="" checked style="display:none;" />
+
+  <div class="select-type default-state">
+    <label id="input-menu-label" class="form-label"><span style="color: red;margin-right: 0.25rem;display:none;" id="dtlr" >*</span>{{ menu_label or _('Index Data') }}</label>
+    <div role="group" aria-labelledby="input-menu-label">
+      {% block input_type_select %}
+        {% if is_upload_enabled %}
+          <button type="button" class="btn btn-default" id="upload-button"
+            title="{{ _('Upload a file on your computer') }}"
+            onclick="showUploadUI()"><i class="fa fa-cloud-upload"></i>{{ _("Upload") }}</button>
+        {% endif %}
+        <button type="button" class="btn btn-default" id="link-button"
+          title="{{ _('Link to a URL on the internet (you can also link to an API)') }}"
+            onclick="showLinkUI()"><i class="fa fa-globe"></i>{{ _('Link') }}</button>
+      {% endblock %}
+    </div>
+  </div>
+
+  {% block input_type_fields %}
+    {% if is_upload_enabled %}
+      <div class="select-type upload-state" style="display:none;">
+      
+        {% snippet 'r2uploader/snippets/uploader2.html', data=data, pkg_id=pkg_dict.id, pkg_state=pkg_dict.state, errors=errors, error_summary=error_summary, include_metadata=false, pkg_name=pkg_name, stage=stage, dataset_type=dataset_type %}
+        <button type="button" class="btn btn-default" onclick="showDefaultState()">{{ _('Back') }}</button>
+      </div>
+    {% endif %}
+
+    <div class="select-type link-state" style="display:none;">
+      {{ input(
+        'index_url',
+        label=url_label or _('URL'),
+        id='index_url',
+        type='url',
+        placeholder=placeholder or 'http://example.com/my-file.bam.bai',
+        error=errors.get('url_field'),
+        classes=['control-full']) }}
+      <button type="button" class="btn btn-default" onclick="showDefaultState()">{{ _('Back') }}</button>
+    </div>
+  {% endblock %}
+{% endif %}
+</div>
+
+<script>
+  function showUploadUI() {
+    document.querySelector('.default-state').style.display = 'none';
+    document.querySelector('.upload-state').style.display = 'block';
+  }
+
+  function showLinkUI() {
+    document.querySelector('.default-state').style.display = 'none';
+    document.querySelector('.link-state').style.display = 'block';
+  }
+
+  function showDefaultState() {
+    document.querySelector('.default-state').style.display = 'block';
+    document.querySelector('.upload-state').style.display = 'none';
+    document.querySelector('.link-state').style.display = 'none';
+  }
+  function checkAndEnableRequired() {
+    // Get the input field values
+    var mainInputField = document.getElementById('field-resource-url'); 
+    var targetInputField = document.getElementById('control-required'); 
+    var spanField = document.getElementById("dtlr")
+
+    // Check the value of the main input field for .bam or .vcf
+    if (mainInputField.value.includes('.bam') || mainInputField.value.includes('.vcf')) {
+        targetInputField.setAttribute('required', 'required');
+        spanField.style.display = "inline";
+    } else {
+        // Remove the required attribute if the condition is not met
+        targetInputField.removeAttribute('required');
+        spanField.style.display = "none";
+    }
+  }
+
+    document.getElementById('field-resource-url').addEventListener('input', checkAndEnableRequired);
+    document.getElementById('field-resource-url').addEventListener('focus', checkAndEnableRequired);
+
+</script>
