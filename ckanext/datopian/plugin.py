@@ -5,7 +5,11 @@ import boto3
 from botocore.exceptions import ClientError
 from botocore.config import Config
 from ckanext.datopian.views.resource import get_blueprints
+from ckanext.datopian.views.api import get_blueprintapi
 import logging
+import json
+import ckan.logic as logic
+import ckan
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
@@ -44,6 +48,7 @@ class DatopianPlugin(plugins.SingletonPlugin):
             'list-parts': list_parts,
             'abort-multipart-upload': abort_multipart_upload,
             'sign-part': sign_part,
+            'dataset_provider': dataset_provider
         }
 
     # IConfigurer
@@ -64,7 +69,7 @@ class DatopianPlugin(plugins.SingletonPlugin):
         blueprint.template_folder = u'templates'
         # Add plugin url rules to Blueprint object
         blueprint.add_url_rule('/hello_plugin', '/hello_plugin', hello_plugin)
-        return get_blueprints()
+        return get_blueprints() + get_blueprintapi()
 
 
     # IResourceController
@@ -234,3 +239,20 @@ def sign_part(context, data_dict):
         return {'error': str(e)}
     
 
+
+@logic.validate(ckan.logic.schema.default_autocomplete_schema)
+def dataset_provider(context, data_dict):
+   provider = toolkit.config.get('ckan.access_provider', '').split(' ')
+   q = data_dict['q']
+
+
+   result = []
+   if q:
+        provider = [p for p in provider if q in p] 
+        
+        for p in provider:
+            options = {}
+            for k in ['id', 'name', 'title']:
+                options[k] = p
+            result.append(options)
+   return result
