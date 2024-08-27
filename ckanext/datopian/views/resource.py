@@ -23,6 +23,9 @@ from ckan.common import _, config, g, request, current_user
 from ckan.views.dataset import (
     _get_pkg_template, _get_package_type, _setup_template_variables
 )
+from ftplib import FTP
+from flask import Response as FlaskResponse
+import re
 
 
 from ckan.types import Context, Response
@@ -63,21 +66,21 @@ S3_REGION_NAME = toolkit.config.get('ckanext.datopian.aws_region_name', '')
 
 
 class S3Client:
-    def __init__(self) -> None:
+    def __init__(self, region_name=None, access_key_id=None, secret_key_id=None) -> None:
         self.s3_client = boto3.client(
             's3',
-            region_name=S3_REGION_NAME,
-            aws_access_key_id=S3_ACCESS_KEY_ID,
-            aws_secret_access_key=S3_SECRET_KEY_ID,
+            region_name= region_name or S3_REGION_NAME,
+            aws_access_key_id= access_key_id or S3_ACCESS_KEY_ID,
+            aws_secret_access_key= secret_key_id or S3_SECRET_KEY_ID,
             config = Config(signature_version='s3v4'),
-            endpoint_url=f'https://s3.{S3_REGION_NAME}.amazonaws.com'
+            endpoint_url=f'https://s3.{region_name or S3_REGION_NAME}.amazonaws.com'
             
         )
 
-    def get_presigned_url(self, key_path, method='get_object', expires_in=3600, extra_params=None):    
+    def get_presigned_url(self, key_path, method='get_object', expires_in=3600, extra_params=None, bucket_name=None):    
         try:
             params = {
-                'Bucket': S3_BUCKET_NAME,
+                'Bucket': bucket_name or S3_BUCKET_NAME,
                 'Key': key_path
             }
             
@@ -113,7 +116,6 @@ def resource_download(package_type, id, resource_id, filename=None):
     context = {'model': model, 'session': model.Session,
                'user': c.user or c.author, 'auth_user_obj': c.userobj}
     
-    s3_client = S3Client()
     try:
         rsc = get_action('resource_show')(context, {'id': resource_id})
         get_action('package_show')(context, {'id': id})
@@ -122,26 +124,152 @@ def resource_download(package_type, id, resource_id, filename=None):
     except NotAuthorized:
         return abort(401, _('Unauthorized to read resource %s') % id)
     
-    if rsc.get('url_type') == 'upload':
-        preview = request.args.get('preview', False)
-        key_path = f"resources/{rsc['id']}/{filename}"
 
+    storage_server = 'default'
+    provider = None
+    if rsc.get('provider', None):
+        provider = rsc.get('provider')
+        storage_server = toolkit.config.get(f'ckan.provider.{provider}.server', None)
+        log.error(f"Using provider: {provider}")
+        log.error(f"Using storage server: {storage_server}")
+
+    if storage_server == 's3':
+        access_key_id = toolkit.config.get(f'ckan.provider.{provider}.access_key_id', None)
+        secret_key_id = toolkit.config.get(f'ckan.provider.{provider}.secret_access_key', None)
+        region_name = toolkit.config.get(f'ckan.provider.{provider}.region', None)
+        bucket_name = toolkit.config.get(f'ckan.provider.{provider}.bucket_name', None)
+
+        s3_client = S3Client(region_name, access_key_id, secret_key_id)
+        key_path = f"{filename}"
         try:
-            if preview:
-                url = s3_client.get_presigned_url(key_path)
-            else:
-                params = {
-                    'ResponseContentDisposition':
-                        'attachment; filename=' + filename,
+            params = {
+                        'ResponseContentDisposition':
+                            'attachment; filename=' + filename,
                 }
-                url = s3_client.get_presigned_url(key_path, extra_params=params)
+            url = s3_client.get_presigned_url(key_path, extra_params=params, bucket_name=bucket_name)
             return redirect(url)
         except ClientError as e:
             return abort(404, str(e))
         
-    else:
-        return redirect(rsc['url'])
+    elif storage_server == "ftp":
+        username = toolkit.config.get(f'ckan.provider.{provider}.username', None)
+        password = toolkit.config.get(f'ckan.provider.{provider}.password', None)
+        host = toolkit.config.get(f'ckan.provider.{provider}.endpoint', None)
+        path = toolkit.config.get(f'ckan.provider.{provider}.path', None)
+        filename = f"{path}/{filename}"
 
+        range_header = request.headers.get('Range', None)
+
+        if range_header:
+            range_match = re.search(r'bytes=(\d+)-(\d*)', range_header)
+            if range_match:
+                start_byte = int(range_match.group(1))
+                end_byte = int(range_match.group(2)) if range_match.group(2) else None
+        else:
+            start_byte = None
+            end_byte = None
+
+        ftp = FTP(host)
+        ftp.login(user=username, passwd=password)
+        ftp.set_pasv(True)
+        file_size = ftp.size(filename)
+        ftp.quit()
+
+        try:
+            file_stream = stream_ftp_file(host, username, password, filename, start_byte=start_byte, end_byte=end_byte)
+            total_length = file_size
+            if start_byte is not None:
+                content_range = f"bytes {start_byte}-{end_byte or total_length-1}/{total_length}"
+                headers = {'Content-Range': content_range}
+                return Response(file_stream, status=206, headers=headers, mimetype='application/octet-stream')
+            else:
+                return Response(file_stream, mimetype='application/octet-stream')
+        except Exception as e:
+            log.error(f"An error occurred: {e}")
+            return abort(404, str(e))
+    
+
+    else:
+        s3_client = S3Client()
+        if rsc.get('url_type') == 'upload':
+            preview = request.args.get('preview', False)
+            key_path = f"resources/{rsc['id']}/{filename}"
+
+            try:
+                if preview:
+                    url = s3_client.get_presigned_url(key_path)
+                else:
+                    params = {
+                        'ResponseContentDisposition':
+                            'attachment; filename=' + filename,
+                    }
+                    url = s3_client.get_presigned_url(key_path, extra_params=params)
+                return redirect(url)
+            except ClientError as e:
+                return abort(404, str(e))
+            
+        else:
+            return redirect(rsc['url'])
+
+
+# def stream_ftp_file(ftp_server, ftp_user, ftp_password, remote_file_path):
+#     ftp = FTP(ftp_server)
+#     ftp.login(user=ftp_user, passwd=ftp_password)
+#     ftp.set_pasv(True)
+    
+#     def generate():
+#         try:
+#             with ftp.transfercmd(f"RETR {remote_file_path}") as conn:
+#                 while True:
+#                     data = conn.recv(34*1024*1024)  # Read data in chunks
+#                     if not data:
+#                         break
+#                     yield data
+#         except Exception as e:
+#             raise e
+#         finally:
+#             ftp.quit()
+#     return generate()
+
+def stream_ftp_file(ftp_server, ftp_user, ftp_password, remote_file_path, **kwargs):    
+    ftp = FTP(ftp_server)
+    ftp.login(user=ftp_user, passwd=ftp_password)
+    ftp.set_pasv(True)
+    kwargs = kwargs
+
+    def generate():
+        start_byte = kwargs.get('start_byte', None)
+        end_byte = kwargs.get('end_byte', None)
+        try:
+            ftp.sendcmd("TYPE I")  # Set binary mode
+            # Use REST command if start_byte is provided
+            if start_byte is not None:
+                ftp.sendcmd(f"REST {start_byte}")
+            
+            with ftp.transfercmd(f"RETR {remote_file_path}") as conn:
+                while True:
+                    chunk_size = 50 * 1024 * 1024
+                    if end_byte is not None:
+                        # Calculate the remaining bytes to fetch
+                        bytes_to_read = min(chunk_size, end_byte - start_byte + 1)
+                    else:
+                        bytes_to_read = chunk_size
+
+                    data = conn.recv(bytes_to_read)
+                    if not data:
+                        break
+                    yield data
+
+                    if start_byte is not None:
+                        start_byte += len(data)
+                        if end_byte is not None and start_byte > end_byte:
+                            break
+        except Exception as e:
+            raise e
+        finally:
+            ftp.quit()
+
+    return generate()
 
 
 class CreateView(MethodView):
