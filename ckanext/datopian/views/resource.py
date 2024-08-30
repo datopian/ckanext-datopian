@@ -140,7 +140,7 @@ def resource_download(package_type, id, resource_id, filename=None):
         bucket_name = toolkit.config.get(f'ckan.provider.{provider}.bucket_name', None)
 
         s3_client = S3Client(region_name, access_key_id, secret_key_id)
-        key_path = f"{filename}"
+        key_path = rsc.get("path", None)
         try:
             params = {
                         'ResponseContentDisposition':
@@ -155,8 +155,10 @@ def resource_download(package_type, id, resource_id, filename=None):
         username = toolkit.config.get(f'ckan.provider.{provider}.username', None)
         password = toolkit.config.get(f'ckan.provider.{provider}.password', None)
         host = toolkit.config.get(f'ckan.provider.{provider}.endpoint', None)
-        path = toolkit.config.get(f'ckan.provider.{provider}.path', None)
-        filename = f"{path}/{filename}"
+        filename = rsc.get("path", None)
+
+        if not filename:
+            return abort(404, "Resource path not found")
 
         range_header = request.headers.get('Range', None)
 
@@ -211,25 +213,6 @@ def resource_download(package_type, id, resource_id, filename=None):
         else:
             return redirect(rsc['url'])
 
-
-# def stream_ftp_file(ftp_server, ftp_user, ftp_password, remote_file_path):
-#     ftp = FTP(ftp_server)
-#     ftp.login(user=ftp_user, passwd=ftp_password)
-#     ftp.set_pasv(True)
-    
-#     def generate():
-#         try:
-#             with ftp.transfercmd(f"RETR {remote_file_path}") as conn:
-#                 while True:
-#                     data = conn.recv(34*1024*1024)  # Read data in chunks
-#                     if not data:
-#                         break
-#                     yield data
-#         except Exception as e:
-#             raise e
-#         finally:
-#             ftp.quit()
-#     return generate()
 
 def stream_ftp_file(ftp_server, ftp_user, ftp_password, remote_file_path, **kwargs):    
     ftp = FTP(ftp_server)

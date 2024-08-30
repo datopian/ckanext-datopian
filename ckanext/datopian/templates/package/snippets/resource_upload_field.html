@@ -53,6 +53,12 @@ placeholder - placeholder text for url field
               document.getElementById('resource-url-link').checked = true;
               document.getElementById('field-resource-url').focus();
             "><i class="fa fa-globe"></i>{{ _('Link') }}</button>
+        <button type="button" class="btn btn-default" id="resource-prem-button"
+         title="{{ _('Add on-prem provider and path to file)') }}"
+           onclick="
+             document.getElementById('resource-prem-link').checked = true;
+             document.getElementById('field-resource-prem').focus();
+           "><i class="fa fa-cloud"></i>{{ _('On-prem data') }}</button>
       {% endblock %}
     </div>
   </div>
@@ -106,5 +112,81 @@ placeholder - placeholder text for url field
           classes=['control-full']) }}
       {% endblock %}
     </div>
+
+    <input type="radio" id="resource-prem-link" name="url_type" value="" {{
+      'checked' if data.get('provider') else '' }}>
+    <div class="select-type">
+      {{ remove_button(
+        js="$('#field-resource-prem').val('');$('#field-resource-provider').val('') ") }}
+        {{ form.input(
+          'path',
+          label= _('File path'),
+          id='field-resource-prem',
+          type='text',
+          placeholder=_('/directory/Simple_Chr21.bam'),
+          value=data.get('path'),
+          error=errors.get('path'),
+          classes=['control-full'],
+          is_required=true) }}
+     
+
+      <div class="form-group control-medium">
+        <label class="form-label" for="field-resource-provider"><span style="color: #C6898B;margin-right: 0.25rem;" >*</span>{{ _('On-Prem Provider') }}</label>
+          <input id="field-resource-provider" type="text" name="provider" placeholder="{{ _('Provider') }}"
+                value="{{data.get('provider')}}" class="control-medium" data-module="autocomplete"
+                data-module-source="/api/2/util/dataset_provider/autocomplete?q=?" required>
+
+       
+      </div>
+     
+        
+        
+      
+    </div>
   {% endblock %}
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const inputField = document.getElementById("field-resource-prem");
+    const errorMessage = document.getElementById("error-message");
+    const submitButtons = document.querySelectorAll("button[name='save']");
+    
+    const validExtensions = ["csv", "bam", "vcf", "bai", "tbi"];
+
+   // Create the error message element if it doesn't exist
+   let errorBlock = document.querySelector(".error-block");
+    if (!errorBlock) {
+        errorBlock = document.createElement("span");
+        errorBlock.className = "error-block";
+        errorBlock.style.display = "none";
+        inputField.insertAdjacentElement("afterend", errorBlock);
+    }
+
+    inputField.addEventListener("blur", function() {
+        const inputValue = inputField.value.trim().toLowerCase();
+        let isValid = false;
+
+        for (const ext of validExtensions) {
+            if (inputValue.includes(ext)) {
+                isValid = true;
+                break;
+            }
+        }
+
+        if (isValid) {
+            errorBlock.style.display = "none";
+            submitButtons.forEach(button => {
+                button.disabled = false;
+            });
+        } else {
+            errorBlock.textContent = "Please enter a valid file type: csv, bam, vcf, bai, or tbi.";
+            errorBlock.style.display = "block";
+            submitButtons.forEach(button => {
+                button.disabled = true;
+            });
+        }
+    });
+});
+
+</script>
