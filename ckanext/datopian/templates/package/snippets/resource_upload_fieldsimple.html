@@ -3,8 +3,14 @@
 <div data-module="resource-upload-field" class="resource-upload-field form-group">
 
 {% if data %}
-   {% set is_required = 'required' if ('.bam' in data.url or '.vcf' in data.url) and ('.bai' not in data.url and '.ti' not in data.url) else '' %}
-    {% if is_required %}
+{% set is_required = 'required' if ('.bam' in data.url or '.vcf' in data.url) and ('.bai' not in data.url and '.ti' not in data.url) else '' %}
+{% else %}
+{% set is_required = '' %}
+{% endif %}
+
+{% if data and is_required  %}
+  
+ 
         {{ input(
                 'index_url',
                 label=_('Index link'),
@@ -16,7 +22,7 @@
                 classes=['control-full'],
                 is_required=is_required)
             }}
-    {% endif %}
+   
 {% else %}
 <input type="hidden" id="control-required" />
   <input type="radio" id="state-none" name="input_type" value="" checked style="display:none;" />
