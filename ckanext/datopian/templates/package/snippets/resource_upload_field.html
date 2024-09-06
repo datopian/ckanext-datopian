@@ -114,7 +114,7 @@ placeholder - placeholder text for url field
     </div>
 
     <input type="radio" id="resource-prem-link" name="url_type" value="" {{
-      'checked' if data.get('provider') else '' }}>
+      'checked' if data.get('provider') !="None"  else '' }}>
     <div class="select-type">
       {{ remove_button(
         js="$('#field-resource-prem').val('');$('#field-resource-provider').val('') ") }}
