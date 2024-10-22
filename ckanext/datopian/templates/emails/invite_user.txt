@@ -1,6 +1,6 @@
 Dear {{ user_name }},
 
-We’re thrilled to welcome you to PortalJS! Your account has been created with the username lucasbispo, and you’re all set to join our community. If you’d prefer something different, you can easily change it later.
+We’re thrilled to welcome you to {{ site_title }}! Your account has been created and you’re all set to join our community. If you’d prefer something different, you can easily change it later.
 
 You’ve been added to the {{ group_type }} {{ group_title }} with the role of {{ role_name }}.
 
