@@ -1,1 +1,1 @@
-Invite for {{ site_title }}
+ Welcome to PortalJS, {{ user_name }} – Let’s Get Started!

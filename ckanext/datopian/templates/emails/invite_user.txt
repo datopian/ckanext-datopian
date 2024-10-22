@@ -1,17 +1,12 @@
 Dear {{ user_name }},
 
-You have been invited to {{ site_title }}.
+We’re thrilled to welcome you to PortalJS! Your account has been created with the username lucasbispo, and you’re all set to join our community. If you’d prefer something different, you can easily change it later.
 
-A user has already been created for you with the username {{ user_name }}. You can change it later.
+You’ve been added to the {{ group_type }} {{ group_title }} with the role of {{ role_name }}.
 
-You have been added to the {{ group_type }} {{ group_title }} with the following role: {{ role_name }}.
+If you have any questions or need assistance getting started, just give us a shout - we’re always here to help.
 
-To accept this invite, please reset your password at:
+We’re so glad to have you with us!
 
-   {{ reset_link }}
-
-
-Have a nice day.
-
---
-Message sent by {{ site_title }} ({{ site_url }})
+Take care,
+The {{ site_title }} Team
