@@ -29,7 +29,7 @@
               {% block resource_actions_inner %}
                 {% block action_manage %}
                   {% if h.check_access('package_update', {'id':pkg.id }) %}
-                    <li>{% link_for _('Manage'), named_route=pkg.type ~ '_resource.edit', id=pkg.name, resource_id=res.id, class_='btn btn-default', icon='wrench' %}</li>
+                    <li>{% link_for _('Manage'), named_route=pkg.type ~ '_resource.edit', id=pkg.name, resource_id=res.id, class_='btn btn-secondary', icon='wrench' %}</li>
                   {% endif %}
                 {% endblock action_manage %}
             {% if res.url and h.is_url(res.url) %}
